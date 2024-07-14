@@ -92,7 +92,18 @@ fun ProductBox(
             }
         } else {
             // Actual content when product data is available
-            content()
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+            ) {
+                Column(
+                    modifier = Modifier
+                        .align(Alignment.TopStart)
+                        .padding(bottom = 50.dp) // Adjust padding to leave space for the ReviewIcon
+                ) {
+                    content()
+                }
+            }
         }
     }
 }
@@ -266,7 +277,7 @@ fun ProductReview(product: ProductsDataItemDTO?, modifier: Modifier = Modifier) 
         ReviewText(product)
         Spacer(modifier = Modifier.width(2.5.dp))
         ReviewImage()
-        Spacer(modifier = Modifier.width(8.dp)) // Adjust spacer as needed
+        Spacer(modifier = Modifier.padding(20.dp))
         ReviewIcon()
     }
 }
@@ -294,12 +305,13 @@ fun ReviewImage() {
 }
 
 @Composable
-fun ReviewIcon() {
+fun ReviewIcon(modifier: Modifier = Modifier) {
     Icon(
         painter = painterResource(id = R.drawable.vector),
         contentDescription = "test",
-        modifier = Modifier
+        modifier = modifier
             .size(50.dp)
+            .padding(bottom = 5.dp, start = 12.dp) // Adjust padding as needed
             .clickable { },
         tint = blue,
     )
