@@ -23,6 +23,7 @@ import androidx.compose.ui.unit.dp
 import com.example.products.Search.SearchViewModel
 import com.example.products.Utilites.CardViewProduct
 import com.example.products.Utilites.ProductBox
+import com.example.products.Utilites.ProductScreen
 import com.example.products.ui.theme.blue
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.SwipeRefreshIndicator
@@ -46,82 +47,3 @@ class MainActivity : ComponentActivity() {
     }
 }
 
-@Composable
-fun ProductScreen(
-    viewModel: ViewModelProduct,
-    searchViewModel: SearchViewModel,
-    modifier: Modifier = Modifier
-) {
-    val isRefreshing by viewModel.isRefreshing.collectAsState()
-    val swipeRefreshState = rememberSwipeRefreshState(isRefreshing)
-
-    Scaffold(topBar = {
-        UpperSides(
-            searchText = searchViewModel.searchQuery.value,
-            onSearchTextChanged = { searchViewModel.setSearchQuery(it) },
-            onSearchClicked = { },
-            onClearClicked = { searchViewModel.setSearchQuery("") },
-            modifier = Modifier.fillMaxWidth()
-        )
-    }) { paddingValues ->
-        val products by viewModel.products.collectAsState()
-        val isLoading by viewModel.isLoading.collectAsState()
-
-        val filteredProducts = searchViewModel.filterProducts(products)
-
-        SwipeRefresh(
-            state = swipeRefreshState,
-            onRefresh = { viewModel.refreshProducts() },
-            indicator = { state, trigger ->
-                SwipeRefreshIndicator(
-                    state = state,
-                    refreshTriggerDistance = trigger,
-                    contentColor = blue // Set your custom color here
-                )
-            }
-        ) {
-            if (isLoading) {
-                Box(
-                    modifier = Modifier
-                        .fillMaxSize(),
-                    contentAlignment = Alignment.Center
-                ) {
-                    CircularProgressIndicator(color = blue)
-                }
-            } else {
-                LazyColumn(modifier = modifier.padding(paddingValues)) {
-                    if (filteredProducts.isEmpty()) {
-                        item {
-                            Text(
-                                text = "No items found!!",
-                                modifier = Modifier.fillMaxSize().padding(top = 20.dp),
-                                color = Color.Red,
-                                textAlign = TextAlign.Center
-                            )
-                        }
-                    } else {
-                        items(filteredProducts.chunked(2)) { rowItems ->
-                            Row(modifier = Modifier.fillMaxWidth()) {
-                                rowItems.forEachIndexed { index, product ->
-                                    ProductBox(
-                                        product = product,
-                                        isLoading = isLoading,
-                                        modifier = Modifier.weight(1f)
-                                    ) {
-                                        CardViewProduct(product = product)
-                                    }
-                                    if (index < rowItems.size - 1) {
-                                        Spacer(modifier = Modifier.width(8.dp)) // Adjust spacing as needed
-                                    }
-                                }
-                                if (rowItems.size < 2) {
-                                    Spacer(modifier = Modifier.weight(1f))
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    }
-}

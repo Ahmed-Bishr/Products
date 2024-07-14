@@ -68,7 +68,7 @@ fun ProductBox(
     Box(
         modifier = modifier
             .wrapContentHeight()
-            .width(230.dp)
+            .wrapContentWidth()
             .padding(15.dp)
             .border(2.dp, color = blueBorder, shape = RoundedCornerShape(12.dp))
             .clip(
@@ -221,9 +221,9 @@ fun ProductPrice(product: ProductsDataItemDTO?) {
             BoxWithConstraints(modifier = Modifier.weight(1f)) {
                 val maxWidth = maxWidth.value
                 val fontSize = when {
-                    maxWidth > 200 -> 13.sp
-                    maxWidth > 150 -> 11.sp
-                    else -> 9.sp
+                    maxWidth > 200 -> 15.sp
+                    maxWidth > 150 -> 19.sp
+                    else -> 12.sp
                 }
 
                 Text(
@@ -240,7 +240,7 @@ fun ProductPrice(product: ProductsDataItemDTO?) {
                 val fontSize = when {
                     maxWidth > 200 -> 15.sp
                     maxWidth > 150 -> 13.sp
-                    else -> 9.sp
+                    else -> 12.sp
                 }
 
                 if (discountAmount > 0) {
@@ -305,14 +305,15 @@ fun ReviewImage() {
 }
 
 @Composable
-fun ReviewIcon(modifier: Modifier = Modifier) {
+fun ReviewIcon() {
     Icon(
         painter = painterResource(id = R.drawable.vector),
         contentDescription = "test",
-        modifier = modifier
-            .size(50.dp)
-            .padding(bottom = 5.dp, start = 12.dp) // Adjust padding as needed
-            .clickable { },
+        modifier = Modifier
+            .size(38.dp)
+            .padding(start = 10.dp ,  bottom = 8.dp)
+            .clickable {  },
         tint = blue,
     )
 }
+
