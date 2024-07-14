@@ -9,6 +9,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -67,7 +68,7 @@ fun ProductBox(
     Box(
         modifier = modifier
             .wrapContentHeight()
-            .width(200.dp)
+            .width(230.dp)
             .padding(15.dp)
             .border(2.dp, color = blueBorder, shape = RoundedCornerShape(12.dp))
             .clip(
@@ -205,22 +206,43 @@ fun ProductPrice(product: ProductsDataItemDTO?) {
 
             val decimalFormat = DecimalFormat("0.00")
             val formattedFinalPrice = decimalFormat.format(finalPrice)
-            Text(
-                text = "EGP $formattedFinalPrice",
-                fontSize = 13.sp,
-                maxLines = 1,
-                fontWeight = FontWeight.Bold,
-                color = blue,
-            )
+
+            BoxWithConstraints(modifier = Modifier.weight(1f)) {
+                val maxWidth = maxWidth.value
+                val fontSize = when {
+                    maxWidth > 200 -> 13.sp
+                    maxWidth > 150 -> 11.sp
+                    else -> 9.sp
+                }
+
+                Text(
+                    text = "EGP $formattedFinalPrice",
+                    fontSize = fontSize,
+                    maxLines = 1,
+                    fontWeight = FontWeight.Bold,
+                    color = blue,
+                )
+            }
             Spacer(modifier = Modifier.width(7.dp))
-            Text(
-                text = "EGP ${decimalFormat.format(price)}",
-                fontWeight = FontWeight.Bold,
-                fontSize = 13.sp,
-                maxLines = 1,
-                color = blue2,
-                textDecoration = TextDecoration.LineThrough
-            )
+            BoxWithConstraints(modifier = Modifier.weight(1f)) {
+                val maxWidth = maxWidth.value
+                val fontSize = when {
+                    maxWidth > 200 -> 15.sp
+                    maxWidth > 150 -> 13.sp
+                    else -> 9.sp
+                }
+
+                if (discountAmount > 0) {
+                    Text(
+                        text = "EGP ${decimalFormat.format(price)}",
+                        fontWeight = FontWeight.Bold,
+                        fontSize = fontSize,
+                        maxLines = 1,
+                        color = blue2,
+                        textDecoration = TextDecoration.LineThrough
+                    )
+                }
+            }
         } else {
             Text(
                 text = "EGP 0",
@@ -252,7 +274,7 @@ fun ProductReview(product: ProductsDataItemDTO?, modifier: Modifier = Modifier) 
 @Composable
 fun ReviewText(product: ProductsDataItemDTO?) {
     Text(
-        text = "Reviews  ${product?.rating}",
+        text = "Reviews  (${product?.rating})",
         fontWeight = FontWeight.Bold,
         color = blue,
         fontSize = 13.sp,
